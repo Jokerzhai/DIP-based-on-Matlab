@@ -1,0 +1,38 @@
+close all
+clear all
+clc;
+%Display the original image
+I = im2double(imread('1.jpeg'));
+[hei,wid,~] = size(I);
+subplot(231),imshow(I);
+title('Original Image(courtesy of MIT)');
+
+%Simulate a motion blur;
+LEN = 21;
+THETA = 11;
+PSF = fspecial('motion',LEN,THETA);
+blurred = imfilter();
+subplot(232),imshow(blurred);title('Blurred Image');
+
+%Inverse filter
+If = fft2(blurred);
+Pf = fft2(PSF,hei,wid);
+deblurred = ifft2(If./Pf);
+subplot(233),imshow(blurred);title('Restore Image')
+
+%Simulate additive noise.
+nosie_mean = 0;
+noise_var = 0.0001;
+blurred_noisy = imnoise(blurred,'gaussian',noise_mean,noise_var);
+subplot(234),imshow(blurred_noisy);title()
+
+%try restoration assuming no noise
+If = fft2(blurred_noisy);
+deblurred2 = ifft2(If./Pf);
+subplot(235),imshow(deblurred2);title();
+
+%Try restoration with noise is known
+noisy = blurred_noisy - blurred;
+Nf = fft2(noisy);
+deblurred2 = ifft2(If./Pf = Nf./Pf);
+subplot(236),imshow(deblurred2);title()
